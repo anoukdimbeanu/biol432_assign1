@@ -1,0 +1,65 @@
+---
+title: "Limb measurement data across 5 species"
+author: "Anouk Dimbeanu"
+date: "2025-01-07"
+output:
+  pdf_document: default
+  html_document: default
+---
+## Loading measurements.csv
+```{r}
+data<-read.csv("measurements.csv")
+head(data)
+```
+
+## Sorted data by species, observer then limb volume
+```{r}
+library(dplyr)
+data <- data %>% arrange(Organism, Observer, volume)
+head(data)
+```
+
+
+## Average volume for each species
+```{r}
+Average <- data %>% 
+  group_by(Organism) %>% 
+  summarise(Average = mean(volume,na.rm=TRUE))
+print(Average)
+```
+
+## Number of observations for each combination of species and obeserver
+```{r}
+Observations <- data %>% 
+  group_by(Organism, Observer) %>%
+  summarise(Observations = n(), .groups = "drop")
+print(Observations)
+```
+
+
+## Boxplot to compare key features of distribution of volumes 
+```{r}
+library(ggplot2)
+
+ggplot(data, aes(x = Organism, y = volume, fill = Organism)) + 
+  geom_boxplot() +
+  xlab("Species") +
+  ylab("Limb Volume") +
+  theme_classic() 
+```
+Figure 1. Box plot displaying the distribution of limb volumes across 5 species. 
+
+
+## Multi-panel plot showing the distribution of limb volume for each species
+```{r}
+ggplot(data, aes(x = volume)) +
+  geom_histogram(bins = 25, 
+                 color = "black", fill = "blue") +
+  facet_wrap(~Organism) +
+  xlab("Limb Volume") +
+  ylab("Frequency") +
+  theme_classic()
+```
+Figure 2. Multi-panel histogram of the frequency distributions of limb volumes for each species. 
+
+
