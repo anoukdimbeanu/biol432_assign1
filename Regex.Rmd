@@ -1,0 +1,43 @@
+---
+title: "Regex"
+author: "Anouk Dimbeanu"
+date: "2025-02-05"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+```
+
+
+## Import measurments CSV
+```{r}
+MData <- read.csv("measurements.csv") 
+```
+
+```{r}
+head(MData)
+```
+
+## Dplyr
+```{r}
+MData <- read.csv("measurements.csv")
+
+MData <- MData %>%
+  mutate(Sp = gsub("[peic].*(\\d)$", "\\1\\2\\3\\4\\5", Organism))
+
+head(MData)
+```
+
+## Create new Measurements.csv using Sp instead of organisms
+```{r}
+MData %>% 
+  select(Sp, everything()) %>%
+  select(-Organism)
+```
+
+## Create new CSV
+```{r}
+write.csv(Mdata,"MeasShort.csv",row.names=FALSE)
+```
+
